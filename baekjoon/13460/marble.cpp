@@ -5,7 +5,7 @@ using namespace std;
 //up, right, down, left
 string dir[4]={"up", "right", "down", "left"};
 int directions[4][2] ={{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-int cache
+int cache[10][10][10][10];
 
 void printBoard(vector<vector<int> > board){
 	for(int i=0; i<board.size(); i++){
@@ -97,9 +97,15 @@ vector<vector<int> > move(int* redLoc, int* blueLoc, vector<vector<int> > board,
 }
 
 int solution(int ans, int* redLoc, int* blueLoc, vector<vector<int> > board, int ith){
-	if (ans<=ith)return 10;
-	if(ith==10) return 10;
-	if(board[blueLoc[0]][blueLoc[1]]==3) return 10;
+	int& ret = cache[redLoc[0]][redLoc[1]][blueLoc[0]][blueLoc[1]];
+	//cout << redLoc[0] << redLoc[1] << '\n';
+	//cout << blueLoc[0] << blueLoc[1] << '\n';
+	//cout << ret << '\n';
+	if (ret !=-1 && ret <= ith) return 11;
+	else ret = ith;
+	if (ans<=ith)return 11;
+	if(ith==11) return 11;
+	if(board[blueLoc[0]][blueLoc[1]]==3) return 11;
 	if(board[redLoc[0]][redLoc[1]]==3&&board[blueLoc[0]][blueLoc[1]]!=3) return ith;
 	for (int i=0; i<4; i++){
 		vector<vector<int> > new_board = board;
@@ -122,6 +128,7 @@ int main(void){
 
 	int redLoc[2], blueLoc[2];
 	char inputVal;
+	memset(cache, -1, sizeof(cache));
 	for(int i=0; i<row; i++){
 		vector<int> t;
 		for(int j=0; j<col; j++){
@@ -140,8 +147,8 @@ int main(void){
 		}
 		board.push_back(t);
 	}
-	int ans = solution(10, redLoc, blueLoc, board,0);
-	if (ans==10) ans=-1;
+	int ans = solution(11, redLoc, blueLoc, board,0);
+	if (ans==11) ans=-1;
 	cout << ans;
 
 }
