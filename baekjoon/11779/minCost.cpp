@@ -27,6 +27,7 @@ int main(void){
 	while(!pq.empty()){
 		pair<int, int> c = pq.top();
 		pq.pop();
+		if(c.first>dist[c.second]) continue;
 		for(auto &e: edges[c.second]){
 			if(dist[e.first]>c.first+e.second) {
 				dist[e.first]=c.first+e.second;
