@@ -3,34 +3,38 @@
 #include<algorithm>
 using namespace std;
 vector<int> tree;
-int arr[500000];
+vector<pair<int, int> > arr;
 
-int initTree(int node, int start, int end){
-	if(start==end) tree[node]=start;
-	int mid=(start+end)/2;
-	int f = initTree(node*2, start, mid);
-	int e = initTree(node*2+1, mid+1, end);
-	return tree[node]=arr[f]>arr[e]? f: e;
-}
-
-void updateTree(int node, int start, int end, int idx, int diff){
-	if(start>idx||end<idx) return;
-	tree[node]+=diff;
-	if(start!=end){
-		int mid = (start+end)/2;
-		updateTree(node*2, start, mid, idx, diff);
-		updateTree(node*2+1, mide+1, end, idx, diff);
+void updateTree(int N, int idx, int diff){
+	while(idx<=N){
+		tree[idx]+=diff;
+		idx=idx+(idx&-idx);
 	}
 }
 
-int getIdx(int node, int start, int end, int left, int right){
-	if(start<=left&&right<=end) return tree[node];
-	if(left>end||right<start) return 0;
-	int mid = (start+end)/2;
-	return getIdx(node*2, start, mid, left, right)+getIdx(node*2+1, mid+1, end, left, right)
-
+int getIdx(int N, int idx){
+	int sum=0;
+	while(idx>0){
+		sum+=tree[idx];
+		idx=idx-(idx&-idx);
+	}
+	return sum;
 }
 
 int main(void){
-
+	int N;
+	scanf("%d", &N);
+	tree.resize(N+1);
+	for(int i=0;i<N; i++){
+		int t;
+		scanf("%d", &t);
+		arr.push_back(make_pair(t, i));
+	}
+	sort(arr.rbegin(), arr.rend());
+	long long ans=0;
+	for(auto& e: arr){
+		ans+=getIdx(N, e.second);
+		updateTree(N, e.second+1, 1);
+	}
+	printf("%lld", ans);
 }
