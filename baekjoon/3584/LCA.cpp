@@ -7,7 +7,9 @@
 using namespace std;
 
 vector<int> graph[MAX_SIZE];
+//ac[x][y] = x의 2^y 번째 조상을 의미
 int ac[MAX_SIZE][30];
+//depth: node의 깊이(level)
 int depth[MAX_SIZE];
 int visited[MAX_SIZE];
 int rt[MAX_SIZE];
