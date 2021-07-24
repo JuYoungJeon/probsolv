@@ -14,3 +14,5 @@ int main(void){
 	}
 	printf("%lld", dp[num]);
 }
+//NOTE: 카탈랑수열 1,2,5,14, ....
+//C(n) = Simga(n-1, i=0) {C(i)*C(n-1-i)}
