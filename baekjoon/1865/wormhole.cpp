@@ -1,9 +1,8 @@
 #include<cstdio>
 #include<vector>
-#include<climits>
 #include<cstring>
 
-#define INF INT_MAX
+#define INF 1e9
 using namespace std;
 int dist[501];
 int main(void){
@@ -32,7 +31,7 @@ int main(void){
 		for(int i=1; i<=n; i++){
 			for(int j=1; j<=n; j++){
 				for(auto& k: edges[j]){
-					if(dist[j]!=INF&&dist[k.first]>dist[j]+k.second){
+					if(dist[k.first]>dist[j]+k.second){
 						dist[k.first]=dist[j]+k.second;
 						if(i==n) negCycle=true;
 					}
@@ -45,3 +44,4 @@ int main(void){
 }
 
 //NOTE:Bellman-ford checking negative cycle
+//BUG-FIX: Update so that starting point does not matter
