@@ -1,6 +1,5 @@
 #include<cstdio>
 #include<cstring>
-#include<cmath>
 #include<algorithm>
 #define INF 1e9
 using namespace std;
