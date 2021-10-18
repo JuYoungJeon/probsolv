@@ -1,78 +1,74 @@
 #include<iostream>
 #include<cstring>
-#include<tuple>
 #include<vector>
-#define BASE 1000
-
+#include<tuple>
 using namespace std;
+#define tiiii tuple<int, int, int, int>
+#define pii pair<int, int>
+#define ST 1000
+
+typedef struct atom{
+	int y, x, d, e;
+}atom;
 
 int dir[4][2]={{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-int map[2002][2002];
+int map[4002][4002];
+atom atoms[1000];
+
 
 int main(void){
-	int T;
-	cin >> T;
-	for(int test_case = 1; test_case<=T; test_case++){
-		int N; 
+	int TC;
+	cin >> TC;
+	for(int test_case=1; test_case<=TC; test_case++){
 		memset(map, 0, sizeof(map));
-		vector<tuple<int, int, int, int>> atoms;
-		cin >> N; 
-		for(int i=1;i<=N; i++){
+		int N;
+		cin >> N;
+		for(int i=0;i<N; i++){
 			int x, y, d, k;
-			cin >> x >> y>> d>>k;
-			atoms.push_back({BASE-y, x+BASE, d, k});
-			map[BASE-y][x+BASE]=i;
+			cin >> x >> y >> d >> k;
+			atoms[i]={(ST-y)*2, (ST+x)*2, d, k};
+			map[(ST-y)*2][(ST+x)*2]+=1;
 		}
-		int rem= N;
 		int ans=0;
-		while(rem>0){
-			for(int a =0; a<atoms.size(); a++){
-				if(get<0>(atoms[a])==-1&&get<1>(atoms[a])==-1) continue;
-				int ny = get<0>(atoms[a])+dir[get<2>(atoms[a])][0];
-				int nx = get<1>(atoms[a])+dir[get<2>(atoms[a])][1];
-				map[get<0>(atoms[a])][get<1>(atoms[a])]=0;
-				if(ny<0||nx<0||ny>=2001||nx>=2001){
-					get<0>(atoms[a])=-1, get<1>(atoms[a])=-1;
-					rem-=1; continue;
+		while(1){
+			int cnt=0;
+			for(int i=0;i<N; i++){
+				int cy = atoms[i].y;
+				int cx = atoms[i].x;
+				int d = atoms[i].d;
+				if(cy==-1&&cx==-1) continue;
+				int ny = cy+dir[d][0];
+				int nx = cx+dir[d][1];
+				if(ny<0||nx<0||ny>4000||nx>4000){
+					atoms[i].y=-1;
+					atoms[i].x=-1;
+                    map[cy][cx]-=1;
+					continue;
 				}
-				if(!map[ny][nx]) {
-					int cd = get<2>(atoms[a]);
-					int td = get<2>(atoms[map[ny][nx]]);
-					if(dir[cd][0]*-1==dir[td][0]&&dir[cd][1]*-1==dir[td][1]){
-						rem-=2;
-						ans+=get<3>(atoms[a]);
-						ans+=get<3>(atoms[map[ny][nx]]);
-						cout << get<3>(atoms[a]) << ' '<<get<3>(atoms[map[ny][nx]])<<'\n';
-						cout << a <<' '<<map[ny][nx]<<'\n';
-						get<0>(atoms[a])=-1, get<1>(atoms[a])=-1;
-						get<0>(atoms[map[ny][nx]])=-1, get<1>(atoms[map[ny][nx]])=-1;
-						map[ny][nx]=0;
-					}else{
-						get<0>(atoms[a])=ny;
-						get<1>(atoms[a])=nx;
-					}
-				}else{
-					get<0>(atoms[a])=ny;
-					get<1>(atoms[a])=nx;
-				}
+				int td=atoms[map[ny][nx]].d;
+				map[ny][nx]+=1;
+				map[cy][cx]-=1;
+				atoms[i].y=ny;
+				atoms[i].x=nx;
+				cnt+=1;
 			}
-			for(int a=0; a<atoms.size(); a++){
-				int y = get<0>(atoms[a]);
-				int x = get<1>(atoms[a]);
-				if(y==-1&& x==-1) continue;
-				if(map[y][x]!=0&&map[y][x]<a){
-					get<0>(atoms[a])=-1, get<1>(atoms[a])=-1;
-					get<0>(atoms[map[y][x]])=-1, get<1>(atoms[map[y][x]])=-1;
-					ans+=get<3>(atoms[a]);
-					ans+=get<3>(atoms[map[y][x]]);
-					cout << get<3>(atoms[a]) <<' '<<get<3>(atoms[map[y][x]])<<'\n';
-					cout << a<<' '<<map[y][x]<<'\n';
-					map[y][x]=0;
-					rem-=2;
-				}else
-					map[y][x]=a;
+			if(cnt<=1) break;
+			vector<pii> loc;
+			for(int i=0;i<N; i++){
+				int cy = atoms[i].y;
+				int cx = atoms[i].x;
+				if(cy==-1&& cx==-1) continue;
+				if(map[cy][cx]<=1) continue;
+				else  loc.push_back({cy,cx});
+				ans+=atoms[i].e;
+				atoms[i].y=-1; atoms[i].x=-1;
+			}
+			for(auto& l: loc){
+				if(map[l.first][l.second]) 
+					map[l.first][l.second]=0;
 			}
 		}
-		cout << ans;
+		cout <<'#'<<test_case<<' '<< ans<<'\n';
 	}
+
 }
